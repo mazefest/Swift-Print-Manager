@@ -42,3 +42,13 @@ struct PrintControlView: View {
             }
     }
 }
+
+extension PrintControlView.PrintAction {
+    var fileModificationAction: FileModificationAction {
+        switch self {
+        case .comment: .comment
+        case .uncomment: .uncomment
+        case .delete: .delete
+        }
+    }
+}

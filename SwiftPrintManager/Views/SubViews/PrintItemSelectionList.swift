@@ -16,24 +16,17 @@ struct PrintItemSelectionList: View {
             ForEach(Array(items.keys.sorted(by: {$0.lastPathComponent < $1.lastPathComponent})), id: \.self) { file in
                 Section {
                     ForEach(items[file] ?? []) { printItem in
-                        HStack {
-                            
-                            PrintItemSelectionSquare(items: selections, file: file, printItem: printItem) { action in
-                                switch action {
-                                case .deSelected: deSelected(file: file, printItem: printItem)
-                                case .selected: selected(file: file, printItem: printItem)
-                                }
+                        PrintItemRowItem(
+                            isSelected: selections.contains(file: file, printItem: printItem),
+                            printItem: printItem
+                        ) { action in
+                            switch action {
+                            case .deSelected: deSelected(file: file, printItem: printItem)
+                            case .selected: selected(file: file, printItem: printItem)
                             }
-
-                            Text("\(printItem.lineNumber):")
-                                .font(.caption)
-                                .foregroundStyle(Color.gray)
-                            Text(printItem.text.trimmingCharacters(in: .whitespaces))
-                                .foregroundStyle(printItem.commented ? Color.gray : Color.white)
-                            
-                            Spacer()
                         }
                         .padding(.leading)
+
                     }
                 } header: {
                     HStack {
@@ -66,6 +59,40 @@ struct PrintItemSelectionList: View {
             selections[file, default: []].append(printItem)
         } else {
             selections[file] = items[file]
+        }
+    }
+}
+
+// Row Item
+extension PrintItemSelectionList {
+    struct PrintItemRowItem: View {
+        var isSelected: Bool
+        var printItem: PrintItem
+        var selectionAction: ((SelectionAction) -> Void)
+        
+        var body: some View {
+            HStack {
+                SelectionSquareContent(isSelected: isSelected)
+                    .button {
+                        selectionAction(isSelected ? .deSelected : .selected)
+                    }
+                    .buttonStyle(.plain)
+
+                Text("\(printItem.lineNumber):")
+                    .font(.caption)
+                    .foregroundStyle(Color.gray)
+                
+                Text(printItem.text.trimmingCharacters(in: .whitespaces))
+                    .foregroundStyle(printItem.commented ? Color.gray : Color.white)
+                
+                Spacer()
+                
+            }
+            .contentShape(Rectangle())
+            .onTapGesture {
+                selectionAction(isSelected ? .deSelected : .selected)
+            }
+
         }
     }
 }

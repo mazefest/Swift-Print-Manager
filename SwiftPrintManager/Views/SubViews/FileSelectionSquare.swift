@@ -11,12 +11,12 @@ struct FileSelectionSquare: View {
     var items: [URL: [PrintItem]]
     var file: URL
     
-    var onAction: (SelectionSquare.Action) -> ()
+    var selectionAction: (SelectionAction) -> ()
     
     var body: some View {
         SelectionSquare(
             isSelected: items.contains(file: file),
-            onAction: onAction
+            selectionAction: selectionAction
         )
     }
 }

@@ -10,13 +10,8 @@ import SwiftUI
 struct SelectionSquare: View {
     var isSelected: Bool
     
-    var onAction: (Action) -> ()
-    
-    enum Action {
-        case deSelected
-        case selected
-    }
-    
+    var selectionAction: (SelectionAction) -> ()
+
     var body: some View {
         if isSelected {
             selectedView()
@@ -30,7 +25,7 @@ struct SelectionSquare: View {
             .foregroundStyle(Color.blue, Color.gray)
             .bold()
             .button {
-                onAction(.deSelected)
+                selectionAction(.deSelected)
             }
             .buttonStyle(PlainButtonStyle())
     }
@@ -40,8 +35,32 @@ struct SelectionSquare: View {
             .foregroundStyle(Color.gray)
             .bold()
             .button {
-                onAction(.selected)
+                selectionAction(.selected)
             }
             .buttonStyle(PlainButtonStyle())
+    }
+}
+
+struct SelectionSquareContent: View {
+    var isSelected: Bool
+    
+    var body: some View {
+        if isSelected {
+            selectedView()
+        } else {
+            notSelectedView()
+        }
+    }
+    
+    private func selectedView() -> some View {
+        Image(systemName: "checkmark.square")
+            .foregroundStyle(Color.blue, Color.gray)
+            .bold()
+    }
+    
+    private func notSelectedView() -> some View {
+        Image(systemName: "square")
+            .foregroundStyle(Color.gray)
+            .bold()
     }
 }
