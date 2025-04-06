@@ -29,7 +29,7 @@ class AppViewModel: ObservableObject {
     }
     
     func selectAll() {
-        if selectedFiles == selections {
+        if selections.contains(selectedFiles) {
             selections = [:]
         } else {
             selections = selectedFiles
