@@ -55,7 +55,6 @@ struct ContentView2: View {
                 .filter { !$0.lastPathComponent.hasPrefix(".swift") } // skip hidden files
                 .map { buildFileTree(from: $0) }
             root.children.forEach { node in
-                print(node.name)
             }
         }
         return root

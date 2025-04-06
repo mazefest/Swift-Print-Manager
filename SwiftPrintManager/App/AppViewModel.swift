@@ -20,6 +20,8 @@ class AppViewModel: ObservableObject {
     
     func onDirectorySelection(_ dir: URL) {
         rootDir = dir
+        selectedFiles = [:]
+        selections = [:]
         probeDir(dir)
     }
     
