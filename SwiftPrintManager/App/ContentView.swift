@@ -10,38 +10,11 @@ import AppKit
 
 struct ContentView: View {
     @StateObject var viewModel: AppViewModel = .init()
-    
+
     var body: some View {
         VStack(alignment: .leading) {
-            HStack {
-                Button {
-                    selectDirectory { dir in
-                        guard let dir else { return }
-                        viewModel.onDirectorySelection(dir)
-                    }
-                } label: {
-                    Text("Add Project")
-                }
-                
-                Spacer()
-                
-                if let _ = viewModel.rootDir {
-                    HStack {
-                        Image(systemName: "arrow.clockwise.circle.fill")
-                            .button {
-                                viewModel.refreshFiles()
-                            }
-                            .buttonStyle(PlainButtonStyle())
-                        VStack {
-                            Text("\(viewModel.rootDir?.lastPathComponent ?? "-")")
-                            Text("\(viewModel.rootDir?.description ?? "-")")
-                                .font(.caption)
-                                .foregroundStyle(Color.gray)
-                        }
-                    }
-                }
-                Spacer()
-            }
+            
+            controlBarView
             
             Divider()
             
@@ -98,6 +71,38 @@ struct ContentView: View {
         }
         .padding()
         .frame(minWidth: 400.0, minHeight: 400.0)
+    }
+    
+    private var controlBarView: some View {
+        HStack {
+            Button {
+                selectDirectory { dir in
+                    guard let dir else { return }
+                    viewModel.onDirectorySelection(dir)
+                }
+            } label: {
+                Text("Add Project")
+            }
+            
+            Spacer()
+            
+            if let _ = viewModel.rootDir {
+                HStack {
+                    Image(systemName: "arrow.clockwise.circle.fill")
+                        .button {
+                            viewModel.refreshFiles()
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                    VStack {
+                        Text("\(viewModel.rootDir?.lastPathComponent ?? "-")")
+                        Text("\(viewModel.rootDir?.description ?? "-")")
+                            .font(.caption)
+                            .foregroundStyle(Color.gray)
+                    }
+                }
+            }
+            Spacer()
+        }
     }
     
     private func selectFiles(completion: @escaping ([URL]) -> Void) {
