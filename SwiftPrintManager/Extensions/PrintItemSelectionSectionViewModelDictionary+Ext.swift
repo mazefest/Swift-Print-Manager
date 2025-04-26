@@ -45,4 +45,12 @@ extension PrintItemSelectionSectionViewModelDictionary {
     func deselectAllUnCommentedPrintItems() {
         self.values.forEach { $0.deSelectAllUnCommentedPrintItems() }
     }
+    
+    func collapseAll() {
+        self.values.forEach { $0.collapseAll() }
+    }
+    
+    func expandAll() {
+        self.values.forEach { $0.expandAll() }
+    }
 }

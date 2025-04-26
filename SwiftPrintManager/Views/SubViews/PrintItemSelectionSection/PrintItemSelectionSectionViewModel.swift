@@ -114,6 +114,14 @@ class PrintItemSelectionSectionViewModel: ObservableObject {
             $0.printItemSelectionViewModelPrintItemSelectionDidChange(self, file: file, printItem: printItem)
         }
     }
+    
+    func collapseAll() {
+        self.isExpanded = false
+    }
+    
+    func expandAll() {
+        self.isExpanded = true
+    }
 }
 
 extension PrintItemSelectionSectionViewModel: PrintItemDelegate {

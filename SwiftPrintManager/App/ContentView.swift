@@ -55,10 +55,30 @@ struct ContentView: View {
             }
             HStack {
                 // All Files
-                PrintItemSelectionList(items: $viewModel.printItemSectionViewModels)
+                VStack {
+                    PrintItemSelectionList(items: $viewModel.printItemSectionViewModels)
+                    FooterBarView { action in
+                        switch action {
+                        case .collapseAll:
+                            viewModel.printItemSectionViewModels.collapseAll()
+                        case .expandAll:
+                            viewModel.printItemSectionViewModels.expandAll()
+                        }
+                    }
+                }
 
                 // Selected Files
-                PrintItemSelectionList(items: $viewModel.selectedPrintItemSectionViewModels)
+                VStack {
+                    PrintItemSelectionList(items: $viewModel.selectedPrintItemSectionViewModels)
+                    FooterBarView { action in
+                        switch action {
+                        case .collapseAll:
+                            viewModel.selectedPrintItemSectionViewModels.collapseAll()
+                        case .expandAll:
+                            viewModel.selectedPrintItemSectionViewModels.expandAll()
+                        }
+                    }
+                }
             }
             
             Spacer()
