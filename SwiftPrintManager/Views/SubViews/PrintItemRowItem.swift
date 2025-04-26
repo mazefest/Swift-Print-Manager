@@ -8,13 +8,14 @@
 import SwiftUI
 
 struct PrintItemRowItem: View {
-    @Binding var isSelected: Bool
-    var printItem: PrintItem
-    var selectionAction: ((SelectionAction) -> Void)
+    @ObservedObject var printItem: PrintItem
     
     var body: some View {
         HStack {
-            CheckBox(isChecked: $isSelected)
+            CheckBox(isChecked: Binding(
+                get: { printItem.isSelected },
+                set: { newValue in printItem.setIsSelected(newValue) }
+            ))
             
             Text("\(printItem.lineNumber):")
                 .font(.caption)
@@ -27,9 +28,5 @@ struct PrintItemRowItem: View {
             
         }
         .contentShape(Rectangle())
-        .onTapGesture {
-            selectionAction(isSelected ? .deSelected : .selected)
-        }
-        
     }
 }

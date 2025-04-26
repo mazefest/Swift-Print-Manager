@@ -12,16 +12,27 @@ class AppViewModel: ObservableObject {
     @Published var selectedFiles: [URL: [PrintItem]] = [:]
     @Published var selections: [URL: [PrintItem]] = [:]
     
-    init(rootDir: URL? = nil, selectedFiles: [URL : [PrintItem]] = [:], selections: [URL : [PrintItem]] = [:]) {
+    @Published var printItemSectionViewModels: PrintItemSelectionSectionViewModelDictionary
+    @Published var selectedPrintItemSectionViewModels: PrintItemSelectionSectionViewModelDictionary = [:]
+    
+    init(rootDir: URL? = nil,
+         selectedFiles: [URL : [PrintItem]] = [:],
+         selections: [URL : [PrintItem]] = [:]
+    ) {
         self.rootDir = rootDir
         self.selectedFiles = selectedFiles
         self.selections = selections
+        self.printItemSectionViewModels = [:]
+        self.selectedPrintItemSectionViewModels = [:]
     }
     
     func onDirectorySelection(_ dir: URL) {
         rootDir = dir
         selectedFiles = [:]
         selections = [:]
+        printItemSectionViewModels = [:]
+        selectedPrintItemSectionViewModels = [:]
+        
         probeDir(dir)
     }
     
@@ -31,31 +42,37 @@ class AppViewModel: ObservableObject {
     }
     
     func selectAll() {
-        if selections.contains(selectedFiles) {
-            selections = [:]
+        if printItemSectionViewModels.allSelected() {
+            printItemSectionViewModels.deselectAllPrintItems()
         } else {
-            selections = selectedFiles
+            printItemSectionViewModels.selectAllPrintItems()
         }
     }
     
-    func selectAll(commented: Bool) {
-        let items = selectedFiles.filter(commented: commented)
-        if self.selections.contains(items) {
-            self.selections = selections.remove(items)
+    func selectAllUnCommented() {
+        if printItemSectionViewModels.allUnCommentedSelected() {
+            printItemSectionViewModels.deselectAllUnCommentedPrintItems()
         } else {
-            self.selections = selections.combine(items)
+            printItemSectionViewModels.selectAllUnCommentedPrintItems()
+        }
+    }
+    
+    func selectAllCommented() {
+        if printItemSectionViewModels.allCommentedSelected() {
+            printItemSectionViewModels.deselectAllCommentedPrintItems()
+        } else {
+            printItemSectionViewModels.selectAllCommentedPrintItems()
         }
     }
     
     func applyModificationToSelectedItems(_ action: FileModificationAction) {
-        selections.forEach { url, prints in
-            prints.forEach { printItem in
-                modifyPrint(printItem.text, in: url, action: action)
+        selectedPrintItemSectionViewModels.forEach { file, viewModel in
+            viewModel.items.forEach { printItem in
+                modifyPrint(printItem.text, in: file, action: action)
             }
-            
-            probeFile(url)
+            probeFile(file)
         }
-        self.selections = [:]
+        selectedPrintItemSectionViewModels = [:]
     }
     
     // MARK: private funcs
@@ -69,9 +86,10 @@ class AppViewModel: ObservableObject {
     func probeFile(_ file: URL) {
         let prints = extractPrintStatements(from: file)
         if prints.count > 0 {
-            selectedFiles[file] = prints
+            printItemSectionViewModels[file] = .init(identifier: "master", file: file, items: prints)
+            printItemSectionViewModels[file]?.addListener(self)
         } else {
-            selectedFiles.removeValue(forKey: file)
+            printItemSectionViewModels.removeValue(forKey: file)
         }
     }
 
@@ -159,5 +177,26 @@ class AppViewModel: ObservableObject {
         
         try? FileManager.default.createDirectory(at: path.deletingLastPathComponent(), withIntermediateDirectories: true)
         try? fileContent.write(to: path, atomically: true, encoding: .utf8)
+    }
+}
+
+extension AppViewModel: PrintItemSelectionSectionViewModelDelegate {
+    func printItemSelectionViewModelPrintItemSelectionDidChange(_ viewModel: PrintItemSelectionSectionViewModel, file: URL, printItem: PrintItem) {
+        if printItem.isSelected {
+            if selectedPrintItemSectionViewModels[file] != nil {
+                let printItem = printItem
+                selectedPrintItemSectionViewModels[file]!.addPrintItem(printItem)
+            } else {
+                selectedPrintItemSectionViewModels[file] = .init(identifier: "selection", file: file, items: [printItem])
+                selectedPrintItemSectionViewModels[file]!.addListener(self)
+            }
+        } else {
+            selectedPrintItemSectionViewModels[file]?.removePrintItem(printItem)
+            
+            // Remove file if empty
+            if selectedPrintItemSectionViewModels[file]?.items.isEmpty ?? false {
+                selectedPrintItemSectionViewModels.removeValue(forKey: file)
+            }
+        }
     }
 }

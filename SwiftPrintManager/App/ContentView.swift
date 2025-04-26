@@ -25,8 +25,8 @@ struct ContentView: View {
                             SelectionControlView { action in
                                 switch action {
                                 case .all: viewModel.selectAll()
-                                case .commented: viewModel.selectAll(commented: true)
-                                case .uncommented: viewModel.selectAll(commented: false)
+                                case .commented: viewModel.selectAllCommented()
+                                case .uncommented: viewModel.selectAllUnCommented()
                                 }
                             }
                             
@@ -55,16 +55,10 @@ struct ContentView: View {
             }
             HStack {
                 // All Files
-                PrintItemSelectionList(
-                    items: $viewModel.selectedFiles,
-                    selections: $viewModel.selections
-                )
-                
+                PrintItemSelectionList(items: $viewModel.printItemSectionViewModels)
+
                 // Selected Files
-                PrintItemSelectionList(
-                    items: $viewModel.selections,
-                    selections: $viewModel.selections
-                )
+                PrintItemSelectionList(items: $viewModel.selectedPrintItemSectionViewModels)
             }
             
             Spacer()
