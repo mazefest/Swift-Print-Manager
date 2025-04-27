@@ -16,12 +16,16 @@ class PrintItemSelectionSectionViewModel: ObservableObject {
     @Published var isExpanded: Bool = true
     @Published var allSelected: Bool = false
     
-    var allCommentedSelected: Bool {
-        items.filter(\.commented).allSatisfy(\.isSelected)
+    var allCommentedSelected: Bool? {
+        let commentedItems = items.filter(\.commented)
+        guard !commentedItems.isEmpty else { return nil }
+        return commentedItems.allSatisfy(\.isSelected)
     }
     
-    var allUnCommentedSelected: Bool {
-        items.filter { !$0.commented }.allSatisfy(\.isSelected)
+    var allUnCommentedSelected: Bool? {
+        let uncommentedItems = items.filter { !$0.commented }
+        guard !uncommentedItems.isEmpty else { return nil }
+        return uncommentedItems.allSatisfy(\.isSelected)
     }
     
     var delegate: [PrintItemSelectionSectionViewModelDelegate] = []
@@ -53,38 +57,30 @@ class PrintItemSelectionSectionViewModel: ObservableObject {
     }
     
     func selectAllCommentedPrintItems() {
-        items.forEach { printItem in
-            if printItem.commented {
-                printItem.setIsSelected(true)
-            }
-        }
+        let commentedItems = items.filter(\.commented)
+        guard !commentedItems.isEmpty else { return }
+        commentedItems.forEach { $0.setIsSelected(true) }
         self.allSelected = items.allSatisfy(\.isSelected)
     }
     
     func deSelectAllCommentedPrintItems() {
-        items.forEach { printItem in
-            if printItem.commented {
-                printItem.setIsSelected(false)
-            }
-        }
+        let commentedItems = items.filter(\.commented)
+        guard !commentedItems.isEmpty else { return }
+        commentedItems.forEach { $0.setIsSelected(false) }
         self.allSelected = items.allSatisfy(\.isSelected)
     }
     
     func selectAllUnCommentedPrintItems() {
-        items.forEach { printItem in
-            if !printItem.commented {
-                printItem.setIsSelected(true)
-            }
-        }
+        let uncommentedItems = items.filter { !$0.commented }
+        guard !uncommentedItems.isEmpty else { return }
+        uncommentedItems.forEach { $0.setIsSelected(true) }
         self.allSelected = items.allSatisfy(\.isSelected)
     }
     
     func deSelectAllUnCommentedPrintItems() {
-        items.forEach { printItem in
-            if !printItem.commented {
-                printItem.setIsSelected(false)
-            }
-        }
+        let uncommentedItems = items.filter { !$0.commented }
+        guard !uncommentedItems.isEmpty else { return }
+        uncommentedItems.forEach { $0.setIsSelected(false) }
         self.allSelected = items.allSatisfy(\.isSelected)
     }
     

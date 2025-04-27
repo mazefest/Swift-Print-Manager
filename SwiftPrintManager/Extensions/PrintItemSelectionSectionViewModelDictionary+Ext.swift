@@ -15,11 +15,15 @@ extension PrintItemSelectionSectionViewModelDictionary {
     }
     
     func allCommentedSelected() -> Bool {
-        self.values.allSatisfy(\.allCommentedSelected)
+        let selections = self.values.compactMap { $0.allCommentedSelected }
+        guard !selections.isEmpty else { return false }
+        return selections.allSatisfy { $0 }
     }
     
     func allUnCommentedSelected() -> Bool {
-        self.values.allSatisfy(\.allUnCommentedSelected)
+        let selections = self.values.compactMap { $0.allUnCommentedSelected }
+        guard !selections.isEmpty else { return false }
+        return selections.allSatisfy { $0 }
     }
     
     func selectAllPrintItems() {

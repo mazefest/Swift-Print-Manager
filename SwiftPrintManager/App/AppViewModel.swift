@@ -9,8 +9,10 @@ import SwiftUI
 
 class AppViewModel: ObservableObject {
     @Published var rootDir: URL?
-    @Published var selectedFiles: [URL: [PrintItem]] = [:]
-    @Published var selections: [URL: [PrintItem]] = [:]
+    
+    @Published var allSelected: Bool = false
+    @Published var allCommenetedSelected: Bool = false
+    @Published var allUncommentedSelected: Bool = false
     
     @Published var printItemSectionViewModels: PrintItemSelectionSectionViewModelDictionary
     @Published var selectedPrintItemSectionViewModels: PrintItemSelectionSectionViewModelDictionary = [:]
@@ -20,16 +22,12 @@ class AppViewModel: ObservableObject {
          selections: [URL : [PrintItem]] = [:]
     ) {
         self.rootDir = rootDir
-        self.selectedFiles = selectedFiles
-        self.selections = selections
         self.printItemSectionViewModels = [:]
         self.selectedPrintItemSectionViewModels = [:]
     }
     
     func onDirectorySelection(_ dir: URL) {
         rootDir = dir
-        selectedFiles = [:]
-        selections = [:]
         printItemSectionViewModels = [:]
         selectedPrintItemSectionViewModels = [:]
         
@@ -73,6 +71,12 @@ class AppViewModel: ObservableObject {
             probeFile(file)
         }
         selectedPrintItemSectionViewModels = [:]
+    }
+    
+    func clearSelections() {
+        self.allSelected = false
+        self.allCommenetedSelected = false
+        self.allUncommentedSelected = false
     }
     
     // MARK: private funcs
@@ -182,6 +186,10 @@ class AppViewModel: ObservableObject {
 
 extension AppViewModel: PrintItemSelectionSectionViewModelDelegate {
     func printItemSelectionViewModelPrintItemSelectionDidChange(_ viewModel: PrintItemSelectionSectionViewModel, file: URL, printItem: PrintItem) {
+        self.allSelected = printItemSectionViewModels.allSelected()
+        self.allCommenetedSelected = printItemSectionViewModels.allCommentedSelected()
+        self.allUncommentedSelected = printItemSectionViewModels.allUnCommentedSelected()
+        
         if printItem.isSelected {
             if selectedPrintItemSectionViewModels[file] != nil {
                 let printItem = printItem

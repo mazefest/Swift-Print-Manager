@@ -22,7 +22,10 @@ struct ContentView: View {
                 HStack {
                     VStack(alignment: .leading) {
                         HStack {
-                            SelectionControlView { action in
+                            SelectionControlView(
+                                allSelected: $viewModel.allSelected,
+                                allCommentedSelected: $viewModel.allCommenetedSelected,
+                                allUnCommentedSelected: $viewModel.allUncommentedSelected)  { action in
                                 switch action {
                                 case .all: viewModel.selectAll()
                                 case .commented: viewModel.selectAllCommented()
@@ -31,12 +34,12 @@ struct ContentView: View {
                             }
                             
                             Spacer()
-                            
-                            if viewModel.selections.count > 0 {
-                                Text("\(self.viewModel.selections.flatMap(\.value).count) Selected Prints")
-                                    .foregroundStyle(Color.gray)
-                                    .font(.caption)
-                            }
+//                            
+//                            if viewModel.selections.count > 0 {
+//                                Text("\(self.viewModel.selections.flatMap(\.value).count) Selected Prints")
+//                                    .foregroundStyle(Color.gray)
+//                                    .font(.caption)
+//                            }
                             
                             PrintControlView { action in
                                 switch action {
@@ -66,6 +69,9 @@ struct ContentView: View {
                         }
                     }
                 }
+                
+                Spacer()
+                    .frame(width: 8)
 
                 // Selected Files
                 VStack {
