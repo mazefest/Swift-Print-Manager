@@ -24,9 +24,7 @@ struct SelectionSquare: View {
         Image(systemName: "checkmark.square")
             .foregroundStyle(Color.blue, Color.gray)
             .bold()
-            .button {
-                selectionAction(.deSelected)
-            }
+            .button(.deSelected, onTap: selectionAction)
             .buttonStyle(PlainButtonStyle())
     }
     
@@ -34,9 +32,7 @@ struct SelectionSquare: View {
         Image(systemName: "square")
             .foregroundStyle(Color.gray)
             .bold()
-            .button {
-                selectionAction(.selected)
-            }
+            .button(.selected, onTap: selectionAction)
             .buttonStyle(PlainButtonStyle())
     }
 }

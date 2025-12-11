@@ -13,5 +13,6 @@ struct SwiftPrintManagerApp: App {
         WindowGroup {
             ContentView()
         }
+        .windowStyle(.hiddenTitleBar)
     }
 }

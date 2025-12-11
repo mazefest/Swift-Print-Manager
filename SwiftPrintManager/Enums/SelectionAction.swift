@@ -7,7 +7,8 @@
 
 import SwiftUI
     
-enum SelectionAction {
+enum SelectionAction: Identifiable {
+    var id: Self { self }
     case deSelected
     case selected
 }

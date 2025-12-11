@@ -71,9 +71,10 @@ class AppViewModel: ObservableObject {
             probeFile(file)
         }
         selectedPrintItemSectionViewModels = [:]
+        self.clearSelectionsToggles()
     }
     
-    func clearSelections() {
+    func clearSelectionsToggles() {
         self.allSelected = false
         self.allCommenetedSelected = false
         self.allUncommentedSelected = false
@@ -129,13 +130,12 @@ class AppViewModel: ObservableObject {
     
     private func modifyPrint(_ printLine: String, in file: URL, action: FileModificationAction) {
         guard file.startAccessingSecurityScopedResource() else {
-            print("Failed to start security scoped access")
+//             print("Failed to start security scoped access")
             return
         }
         defer { file.stopAccessingSecurityScopedResource() }
         
         guard let contents = try? String(contentsOf: file, encoding: .utf8) else {
-            print("Could not read file")
             return
         }
         
@@ -166,9 +166,8 @@ class AppViewModel: ObservableObject {
         
         do {
             try updatedContents.write(to: file, atomically: true, encoding: .utf8)
-            print("File successfully written")
         } catch {
-            print("Write failed: \(error.localizedDescription)")
+// //             print("Write failed: \(error.localizedDescription)")
         }
     }
     
