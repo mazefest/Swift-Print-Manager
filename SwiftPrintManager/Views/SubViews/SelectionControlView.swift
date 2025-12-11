@@ -17,43 +17,49 @@ struct SelectionControlView: View {
     var actionItems: [Action] = Action.allCases
 
     var body: some View {
-        HStack {
+        HStack(spacing: 8) {
             ForEach(actionItems) { item in
                 button(for: item)
-                Divider()
-                    .frame(height: 10.0)
+                if item != actionItems.last {
+                    Divider()
+                        .frame(height: 14.0)
+                }
             }
         }
     }
     
     private func button(for action: Action) -> some View {
-        HStack {
-            switch action {
-            case .all:
-                CheckBox(isChecked: Binding(
-                    get: { allSelected },
-                    set: { newValue in
-                        onAction(action)
-                    }
-                ))
-            case .commented:
-                CheckBox(isChecked: Binding(
-                    get: { allCommentedSelected },
-                    set: { newValue in
-                        onAction(action)
-                    }
-                ))
-            case .uncommented:
-                CheckBox(isChecked: Binding(
-                    get: { allUnCommentedSelected },
-                    set: { newValue in
-                        onAction(action)
-                    }
-                ))
+        Button {
+            onAction(action)
+        } label: {
+            HStack(spacing: 6) {
+                switch action {
+                case .all:
+                    CheckBox(isChecked: Binding(
+                        get: { allSelected },
+                        set: { _ in onAction(action) }
+                    ))
+                case .commented:
+                    CheckBox(isChecked: Binding(
+                        get: { allCommentedSelected },
+                        set: { _ in onAction(action) }
+                    ))
+                case .uncommented:
+                    CheckBox(isChecked: Binding(
+                        get: { allUnCommentedSelected },
+                        set: { _ in onAction(action) }
+                    ))
+                }
+                
+                Text(action.title)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(Color(nsColor: .labelColor))
             }
-            
-            Text(action.title)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .contentShape(Rectangle())
         }
+        .buttonStyle(.plain)
     }
 }
 

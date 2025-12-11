@@ -130,7 +130,7 @@ class AppViewModel: ObservableObject {
     
     private func modifyPrint(_ printLine: String, in file: URL, action: FileModificationAction) {
         guard file.startAccessingSecurityScopedResource() else {
-//             print("Failed to start security scoped access")
+            print("Failed to start security scoped access")
             return
         }
         defer { file.stopAccessingSecurityScopedResource() }

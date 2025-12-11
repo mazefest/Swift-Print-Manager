@@ -13,32 +13,45 @@ struct ContentView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0.0) {
-            
-            HStack {
-                Spacer()
-                RootDirectoryIndicatorView(
-                    rootDir: $viewModel.rootDir,
-                    onRefresh: viewModel.refreshFiles,
-                    onSelectDirectory: onSelectDirectory
-                )
-                Spacer()
-            }
-            .padding(.bottom)
+            // Header Section
+            headerSection()
+                .padding(.horizontal, 16)
+                .padding(.top, 12)
+                .padding(.bottom, 16)
+                .background {
+                    Rectangle()
+                        .fill(Color(nsColor: .separatorColor).opacity(0.3))
+                }
             
             Divider()
+                .background(Color(nsColor: .separatorColor))
 
+            // Main Content Area
             HStack(spacing: 0.0) {
                 printItemSelectionView()
                 
                 Divider()
+                    .background(Color(nsColor: .separatorColor))
                 
                 printItemStagingView()
             }
             
             Spacer()
         }
-        .padding([.horizontal, .bottom])
+        .background(Color(nsColor: .windowBackgroundColor))
         .frame(minWidth: 400.0, minHeight: 400.0)
+    }
+    
+    private func headerSection() -> some View {
+        HStack {
+            Spacer()
+            RootDirectoryIndicatorView(
+                rootDir: $viewModel.rootDir,
+                onRefresh: viewModel.refreshFiles,
+                onSelectDirectory: onSelectDirectory
+            )
+            Spacer()
+        }
     }
     
     private func onSelectDirectory() {
@@ -84,7 +97,8 @@ struct ContentView: View {
     
     private func printItemSelectionView() -> some View {
         VStack(spacing: 0.0) {
-            HStack {
+            // Toolbar
+            HStack(spacing: 12) {
                 SelectionControlView(
                     allSelected: $viewModel.allSelected,
                     allCommentedSelected: $viewModel.allCommenetedSelected,
@@ -97,18 +111,26 @@ struct ContentView: View {
                     }
                 Spacer()
             }
-            .frame(height: 30.0)
-
-            HStack {
-                Text("Prints")
-                    .padding(.leading, 4)
-                    .padding(.vertical, 4)
-                Spacer()
-            }
+            .frame(height: 36)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
             .background {
-                Color(.darkGray)
+                Rectangle()
+                    .fill(Color(nsColor: .controlBackgroundColor))
             }
+            
+            Divider()
+                .background(Color(nsColor: .separatorColor))
+
+            // Section Header
+            sectionHeader(title: "Prints")
+            
+            // Content List
             PrintItemSelectionList(items: $viewModel.printItemSectionViewModels)
+            
+            // Footer
+            Divider()
+                .background(Color(nsColor: .separatorColor))
             FooterBarView { action in
                 switch action {
                 case .collapseAll:
@@ -117,12 +139,19 @@ struct ContentView: View {
                     viewModel.printItemSectionViewModels.expandAll()
                 }
             }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .background {
+                Rectangle()
+                    .fill(Color(nsColor: .controlBackgroundColor))
+            }
         }
     }
     
     private func printItemStagingView() -> some View {
         VStack(spacing: 0.0) {
-            HStack {
+            // Toolbar
+            HStack(spacing: 12) {
                 Spacer()
                 PrintControlView { action in
                     switch action {
@@ -132,18 +161,26 @@ struct ContentView: View {
                     }
                 }
             }
-            .frame(height: 30.0)
-            HStack {
-                Text("Staging")
-                    .padding(.leading, 4)
-                    .padding(.vertical, 4)
-                Spacer()
-            }
+            .frame(height: 36)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
             .background {
-                Color(.darkGray)
+                Rectangle()
+                    .fill(Color(nsColor: .controlBackgroundColor))
             }
+            
+            Divider()
+                .background(Color(nsColor: .separatorColor))
+
+            // Section Header
+            sectionHeader(title: "Staging")
+            
+            // Content List
             PrintItemSelectionList(items: $viewModel.selectedPrintItemSectionViewModels)
             
+            // Footer
+            Divider()
+                .background(Color(nsColor: .separatorColor))
             FooterBarView { action in
                 switch action {
                 case .collapseAll:
@@ -152,6 +189,27 @@ struct ContentView: View {
                     viewModel.selectedPrintItemSectionViewModels.expandAll()
                 }
             }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .background {
+                Rectangle()
+                    .fill(Color(nsColor: .controlBackgroundColor))
+            }
+        }
+    }
+    
+    private func sectionHeader(title: String) -> some View {
+        HStack(spacing: 8) {
+            Text(title)
+                .font(.system(size: 13, weight: .semibold, design: .default))
+                .foregroundColor(Color(nsColor: .secondaryLabelColor))
+            Spacer()
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .background {
+            Rectangle()
+                .fill(Color(nsColor: .quaternaryLabelColor).opacity(0.1))
         }
     }
 }
@@ -182,40 +240,51 @@ struct RootDirectoryIndicatorView: View {
     var body: some View {
         Group {
             if let _ = rootDir {
-                HStack {
-                    Image(systemName: "arrow.clockwise.circle.fill")
-                        .button {
-                            self.onRefresh()
-                        }
-                        .buttonStyle(PlainButtonStyle())
-                    VStack {
-                        Text("\(rootDir?.lastPathComponent ?? "-")")
-                        Text("\(rootDir?.description ?? "-")")
-                            .font(.caption)
-                            .foregroundStyle(Color.gray)
+                HStack(spacing: 12) {
+                    Button(action: onRefresh) {
+                        Image(systemName: "arrow.clockwise")
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundColor(Color(nsColor: .controlAccentColor))
+                    }
+                    .buttonStyle(.plain)
+                    .help("Refresh")
+                    
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(rootDir?.lastPathComponent ?? "-")
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundColor(Color(nsColor: .labelColor))
+                            .lineLimit(1)
+                        Text(rootDir?.path ?? "-")
+                            .font(.system(size: 11, weight: .regular))
+                            .foregroundColor(Color(nsColor: .secondaryLabelColor))
+                            .lineLimit(1)
                     }
                 }
-                .padding()
+                .padding(.horizontal, 16)
+                .padding(.vertical, 12)
             } else {
-                HStack {
-                    VStack {
+                Button(action: onSelectDirectory) {
+                    HStack(spacing: 8) {
+                        Image(systemName: "folder.badge.plus")
+                            .font(.system(size: 14, weight: .medium))
                         Text("Select a directory")
+                            .font(.system(size: 14, weight: .medium))
                     }
-                    Divider()
-                        .frame(height: 40.0)
-                    Image(systemName: "plus")
-                        .buttonStyle(.plain)
-                        .button {
-                            self.onSelectDirectory()
-                        }
+                    .foregroundColor(Color(nsColor: .controlAccentColor))
                 }
-                .padding()
+                .buttonStyle(.plain)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 12)
             }
         }
         .background {
-            RoundedRectangle(cornerRadius: 5.0, style: .continuous)
-                .frame(minWidth: 200.0, minHeight: 50.0)
-                .foregroundStyle(Color(.darkGray))
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .fill(Color(nsColor: .controlBackgroundColor))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .strokeBorder(Color(nsColor: .separatorColor), lineWidth: 1)
+                }
         }
+        .frame(minWidth: 280)
     }
 }

@@ -14,23 +14,34 @@ struct FooterBarView: View {
         case expandAll
     }
     var body: some View {
-        HStack {
-            Text("Collapse All")
-                .styledFont(size: 10)
-                .foregroundStyle(Color.gray)
-                .button {
-                    onAction(.collapseAll)
-                }
-                .buttonStyle(PlainButtonStyle())
+        HStack(spacing: 8) {
+            Button {
+                onAction(.collapseAll)
+            } label: {
+                Text("Collapse All")
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundColor(Color(nsColor: .secondaryLabelColor))
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            
             Divider()
-                .frame(height: 8.0)
-            Text("Expand All")
-                .styledFont(size: 10)
-                .foregroundStyle(Color.gray)
-                .button {
-                    onAction(.expandAll)
-                }
-                .buttonStyle(PlainButtonStyle())
+                .frame(height: 12.0)
+            
+            Button {
+                onAction(.expandAll)
+            } label: {
+                Text("Expand All")
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundColor(Color(nsColor: .secondaryLabelColor))
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            
             Spacer()
         }
     }

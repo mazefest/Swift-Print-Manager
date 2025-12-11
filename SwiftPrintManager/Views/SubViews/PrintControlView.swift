@@ -28,7 +28,7 @@ struct PrintControlView: View {
     }
     
     var body: some View {
-        HStack {
+        HStack(spacing: 8) {
             ForEach(items) { item in
                 button(for: item)
             }
@@ -36,10 +36,25 @@ struct PrintControlView: View {
     }
     
     private func button(for action: PrintAction) -> some View {
-        Text(action.title)
-            .button {
-                self.onAction(action)
-            }
+        Button {
+            self.onAction(action)
+        } label: {
+            Text(action.title)
+                .font(.system(size: 13, weight: .medium))
+                .foregroundColor(Color(nsColor: .labelColor))
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+                .background {
+                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                        .fill(Color(nsColor: .controlAccentColor).opacity(0.1))
+                }
+                .overlay {
+                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                        .strokeBorder(Color(nsColor: .controlAccentColor).opacity(0.3), lineWidth: 1)
+                }
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
     }
 }
 
