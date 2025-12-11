@@ -23,4 +23,10 @@ extension View {
     public func button(onTap: @escaping () -> Void) -> some View {
         self.modifier(ButtonViewModifier(onTap: onTap))
     }
+    
+    public func button<Item: Identifiable>(_ item: Item, onTap: @escaping (Item) -> ()) -> some View {
+        self.modifier(ButtonViewModifier(onTap: {
+            onTap(item)
+        }))
+    }
 }

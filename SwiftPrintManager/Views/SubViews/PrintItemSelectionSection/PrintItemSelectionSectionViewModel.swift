@@ -122,7 +122,6 @@ class PrintItemSelectionSectionViewModel: ObservableObject {
 
 extension PrintItemSelectionSectionViewModel: PrintItemDelegate {
     func printItemSelectionChanged(_ printItem: PrintItem, isSelected: Bool) {
-        print("\(self.identifier): print item changed")
         self.allSelected = items.allSatisfy(\.isSelected)
         self.notifyListenersPrintItemSelectionChanged(file: file, printItem: printItem)
     }

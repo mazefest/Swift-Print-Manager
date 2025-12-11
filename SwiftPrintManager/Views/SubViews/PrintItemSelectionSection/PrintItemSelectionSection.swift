@@ -51,6 +51,7 @@ struct PrintItemSelectionSection: View {
                     .foregroundStyle(Color.orange)
                 
                 Text(viewModel.file.lastPathComponent)
+                    .foregroundStyle(Color.white)
                 Spacer()
             }
         }
