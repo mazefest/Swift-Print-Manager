@@ -18,14 +18,8 @@ struct ContentView: View {
                 Spacer()
                 RootDirectoryIndicatorView(
                     rootDir: $viewModel.rootDir,
-                    onRefresh: {
-                        viewModel.refreshFiles()
-                    },
-                    onSelectDirectory: {
-                        self.selectDirectory { url in
-                            self.viewModel.rootDir = url
-                        }
-                    }
+                    onRefresh: viewModel.refreshFiles,
+                    onSelectDirectory: onSelectDirectory
                 )
                 Spacer()
             }
@@ -36,7 +30,6 @@ struct ContentView: View {
             HStack(spacing: 0.0) {
                 printItemSelectionView()
                 
-                
                 Divider()
                 
                 printItemStagingView()
@@ -46,6 +39,12 @@ struct ContentView: View {
         }
         .padding([.horizontal, .bottom])
         .frame(minWidth: 400.0, minHeight: 400.0)
+    }
+    
+    private func onSelectDirectory() {
+        self.selectDirectory { url in
+            self.viewModel.rootDir = url
+        }
     }
     
     private func selectFiles(completion: @escaping ([URL]) -> Void) {
