@@ -263,16 +263,44 @@ struct RootDirectoryIndicatorView: View {
                 .padding(.horizontal, 16)
                 .padding(.vertical, 12)
             } else {
-                Button(action: onSelectDirectory) {
-                    HStack(spacing: 8) {
-                        Image(systemName: "folder.badge.plus")
-                            .font(.system(size: 14, weight: .medium))
-                        Text("Select a directory")
-                            .font(.system(size: 14, weight: .medium))
+                HStack(spacing: 12) {
+                    Image(systemName: "folder")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundColor(Color(nsColor: .secondaryLabelColor))
+                        .frame(width: 28, height: 28)
+                        .background(
+                            RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                .fill(Color(nsColor: .quaternaryLabelColor).opacity(0.15))
+                        )
+                    
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("No directory selected")
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundColor(Color(nsColor: .labelColor))
+                        Text("Choose a folder to start managing prints.")
+                            .font(.system(size: 11, weight: .regular))
+                            .foregroundColor(Color(nsColor: .secondaryLabelColor))
                     }
-                    .foregroundColor(Color(nsColor: .controlAccentColor))
+                    
+                    Spacer()
+                    
+                    Button(action: onSelectDirectory) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: 12, weight: .semibold))
+                            Text("Choose Folder…")
+                                .font(.system(size: 13, weight: .semibold))
+                        }
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(
+                            RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                .fill(Color(nsColor: .controlAccentColor))
+                        )
+                        .foregroundColor(Color(nsColor: .textBackgroundColor))
+                    }
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 12)
             }
